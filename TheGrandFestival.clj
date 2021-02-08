@@ -22,24 +22,25 @@
   [ls]
   (vec (reverse (build-psum-helper (reverse ls)))))
 
-(defn solve
-  "Maximum money on cur-day, TAKING the that day's prize"
-  ([N R prefix-sums] (solve N R prefix-sums N))
-  ([N R prefix-sums cur-day]
-   (if (<= cur-day 0)
-     0
-     ;; [l, r)
-     (let [l (max 0 (- cur-day R 1))
-           r (- cur-day 1)
-           prev-days (range l r)]
-       (if (<= cur-day R) (query-psum prefix-sums 1 cur-day)
-           (apply max (cons (query-psum prefix-sums cur-day cur-day)
-                            (map
-                             #(let [prior-day %
-                                    rest-day (+ % 1)]
-                                (+ (solve N R prefix-sums prior-day)
-                                   (query-psum prefix-sums (+ rest-day 1) cur-day)))
-                             prev-days))))))))
+;; Maximum money on cur-day, TAKING the that day's prize
+(def solve
+  (memoize (fn
+    ([N R prefix-sums] (solve N R prefix-sums N))
+    ([N R prefix-sums cur-day]
+     (if (<= cur-day 0)
+       0
+       ;; [l, r)
+       (let [l (max 0 (- cur-day R 1))
+             r (- cur-day 1)
+             prev-days (range l r)]
+         (if (<= cur-day R) (query-psum prefix-sums 1 cur-day)
+             (apply max (cons (query-psum prefix-sums cur-day cur-day)
+                              (map
+                               #(let [prior-day %
+                                      rest-day (+ % 1)]
+                                  (+ (solve N R prefix-sums prior-day)
+                                     (query-psum prefix-sums (+ rest-day 1) cur-day)))
+                               prev-days))))))))))
 
 (defn sol-wrapper
   [arr R]
