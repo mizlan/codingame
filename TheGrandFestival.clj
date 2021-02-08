@@ -2,9 +2,6 @@
   (:gen-class)
   (:require [clojure.string :as str]))
 
-(def test-r 3)
-(def test-input '(13 12 11 9 16 17 100))
-
 (defn query-psum
   "One-indexed"
   [prefix-sums l r]
@@ -22,7 +19,7 @@
   [ls]
   (vec (reverse (build-psum-helper (reverse ls)))))
 
-;; Maximum money on cur-day, TAKING the that day's prize
+;; Maximum money on cur-day, TAKING that day's prize
 (def solve
   (memoize (fn
     ([N R prefix-sums] (solve N R prefix-sums N))
